@@ -32,6 +32,8 @@ client.object = {
 class Miaf {
     constructor() {
         this.miafURL;
+        this._map = new Map();
+        this.client = client;
         process.on('message', (data) => {
             if (queue.get(data.id)) {
               queue.get(data.id)(data);
@@ -51,6 +53,19 @@ class Miaf {
             await this.urlUpdate(url, guilds);
         }, 1000);
     }
+
+    get(id) {
+    let inn = this._map.get(id);
+    if (!inn) {
+      inn = new objectsQuery(this.client, id);
+      this._map.set(id, inn);
+    }
+    return inn;
+  }
+
+ get lcLinks () {
+    return this.client.vurlMiaf;
+  }
 
     urlDurdur() {
         clearInterval(this.miafURL).then(x => console.log("basarili! url artık spamlanmıyor!"))
